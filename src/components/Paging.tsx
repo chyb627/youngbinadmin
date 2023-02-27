@@ -1,15 +1,21 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
-/* eslint-disable jsx-a11y/anchor-has-content */
-import React from 'react';
+import React, { useCallback } from 'react';
 
-const Paging = ({ postsPerPage, totalPosts, paginate, currentPage, onChangeRow, staticPostsPerPage }) => {
+interface PagingProps {
+  postsPerPage: number;
+  totalPosts: number;
+  paginate: any;
+  currentPage: number;
+  onChangeRow: () => void;
+  staticPostsPerPage: number;
+}
+
+const Paging = ({ postsPerPage, totalPosts, paginate, currentPage, onChangeRow, staticPostsPerPage }: PagingProps) => {
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
     pageNumbers.push(i);
   }
-
   // 1페이지로 가기
-  const onClickPprev = () => {
+  const onClickPprev = useCallback(() => {
     if (currentPage > 1) {
       paginate(1);
       const URLSearch = window.location.search;
@@ -18,10 +24,10 @@ const Paging = ({ postsPerPage, totalPosts, paginate, currentPage, onChangeRow, 
         window.location.replace(`/${arr[0]}&page=1`);
       }
     }
-  };
+  }, [currentPage, paginate]);
 
   // 이전페이지로 가기
-  const onClickPrev = () => {
+  const onClickPrev = useCallback(() => {
     if (currentPage > 1) {
       paginate(currentPage - 1);
       const URLSearch = window.location.search;
@@ -32,10 +38,10 @@ const Paging = ({ postsPerPage, totalPosts, paginate, currentPage, onChangeRow, 
     } else {
       paginate(1);
     }
-  };
+  }, [currentPage, paginate]);
 
   // 다음페이지로 가기
-  const onClickNext = () => {
+  const onClickNext = useCallback(() => {
     if (currentPage < pageNumbers.length) {
       paginate(currentPage + 1);
       const URLSearch = window.location.search;
@@ -48,10 +54,10 @@ const Paging = ({ postsPerPage, totalPosts, paginate, currentPage, onChangeRow, 
     } else {
       paginate(pageNumbers.length);
     }
-  };
+  }, [currentPage, pageNumbers.length, paginate]);
 
   // 마지막페이지로 가기
-  const onClickNnext = () => {
+  const onClickNnext = useCallback(() => {
     if (currentPage < pageNumbers.length) {
       paginate(pageNumbers.length);
 
@@ -63,7 +69,7 @@ const Paging = ({ postsPerPage, totalPosts, paginate, currentPage, onChangeRow, 
         window.location.replace(`/?text=&condition=all&row=10&page=${pageNumbers.length}`);
       }
     }
-  };
+  }, [currentPage, pageNumbers.length, paginate]);
 
   return (
     <div className="page_wrap">
@@ -74,8 +80,8 @@ const Paging = ({ postsPerPage, totalPosts, paginate, currentPage, onChangeRow, 
       </select>
 
       <div className="page_nation">
-        <a className="arrow pprev" onClick={onClickPprev}></a>
-        <a className="arrow prev" onClick={onClickPrev}></a>
+        <button className="arrow pprev" onClick={onClickPprev} />
+        <button className="arrow prev" onClick={onClickPrev} />
 
         {pageNumbers &&
           pageNumbers.map((number, index) => {
@@ -91,19 +97,19 @@ const Paging = ({ postsPerPage, totalPosts, paginate, currentPage, onChangeRow, 
             };
 
             return (
-              <a
+              <button
                 onClick={numberClick}
                 key={index}
                 value={index + 1}
                 className={`${Number(currentPage) === index + 1 ? ' active' : ''}`}
               >
                 {index + 1}
-              </a>
+              </button>
             );
           })}
 
-        <a className="arrow next" onClick={onClickNext}></a>
-        <a className="arrow nnext" onClick={onClickNnext}></a>
+        <button className="arrow next" onClick={onClickNext} />
+        <button className="arrow nnext" onClick={onClickNnext} />
       </div>
     </div>
   );

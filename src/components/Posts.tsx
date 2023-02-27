@@ -1,6 +1,11 @@
 import React from 'react';
+import { Post } from '../types/types';
 
-const Posts = ({ posts }) => {
+interface PostsProps {
+  posts: Post[];
+}
+
+const Posts = ({ posts }: PostsProps) => {
   return (
     <tbody>
       {posts.map((post) => {

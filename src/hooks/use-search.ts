@@ -1,24 +1,29 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { Post } from '../types/types';
 
 export const useSearch = () => {
   const [searchText, setSearchText] = useState('');
   const [searchCondition, setSearchCondition] = useState('all');
 
-  const getDataAPI = async () => {
-    const requestURL = 'https://dummyjson.com/products?limit=100';
-    const res = await fetch(requestURL);
-    const result = await res.json();
+  const getDataAPI = useCallback(async () => {
+    try {
+      const requestURL = 'https://dummyjson.com/products?limit=100';
+      const res = await fetch(requestURL);
+      const result = await res.json();
 
-    return result.products;
-  };
+      return result.products;
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
-  const useResults = (condition, keyword) => {
+  const useResults = (condition: string, keyword: string) => {
     return useQuery({
       queryKey: ['search', { condition, keyword }],
       queryFn: getDataAPI,
       select: (datas) =>
-        datas.filter((data) => {
+        datas.filter((data: Post) => {
           if (condition === 'all') {
             const toLowerDataTitle = data.title.toLowerCase().replace(/(\s*)/g, '');
             const toLowerDataBrand = data.brand.toLowerCase().replace(/(\s*)/g, '');
@@ -46,7 +51,7 @@ export const useSearch = () => {
       onSuccess: (successData) => {
         // console.log('onSuccess::', successData);
       },
-      onError: (e) => {
+      onError: (e: Error) => {
         console.log('onError::', e.message);
       },
       cacheTime: Infinity,

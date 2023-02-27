@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { Post } from '../types/types';
 
 export const usePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -7,13 +8,16 @@ export const usePage = () => {
   const indexOfLast = currentPage * postsPerPage;
   const indexOfFirst = indexOfLast - postsPerPage;
 
-  const currentPosts = (posts) => {
-    let currentPosts = 0;
-    currentPosts = posts.slice(indexOfFirst, indexOfLast);
-    return currentPosts;
-  };
+  const currentPosts = useCallback(
+    (posts: Post[]) => {
+      let currentPosts: Post[] = [];
+      currentPosts = posts.slice(indexOfFirst, indexOfLast);
+      return currentPosts;
+    },
+    [indexOfFirst, indexOfLast],
+  );
 
-  const onChangeRow = (e) => {
+  const onChangeRow = useCallback((e: any) => {
     setPostsPerPage(e.target.value);
     setCurrentPage(1);
     const URLSearch = window.location.search.split('&row=');
@@ -23,7 +27,7 @@ export const usePage = () => {
     } else {
       window.location.replace(`/?text=&condition=all&row=${e.target.value}&page=1`);
     }
-  };
+  }, []);
 
   return {
     currentPage,

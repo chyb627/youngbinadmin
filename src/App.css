@@ -11,6 +11,16 @@ a {
   cursor: pointer;
   color: #0f0f0f;
 }
+button {
+  border: 0;
+  outline: 0;
+  text-decoration: none;  
+  cursor: pointer;
+  color: #0f0f0f;
+  width: 28px;
+  height: 28px;
+  margin-right: 1px;
+}
 
 select{
   appearance: none;
@@ -142,7 +152,7 @@ table{
 	font-size:0;
  }
 .page_nation {
-	display:inline-block;
+  display: flex;
 }
 .page_nation .none {
 	display:none;
