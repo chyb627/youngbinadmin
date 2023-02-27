@@ -5,7 +5,7 @@ interface PagingProps {
   totalPosts: number;
   paginate: any;
   currentPage: number;
-  onChangeRow: () => void;
+  onChangeRow: (e: any) => void;
   staticPostsPerPage: number;
 }
 

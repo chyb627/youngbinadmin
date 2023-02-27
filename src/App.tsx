@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect } from 'react';
+import { KeyboardEvent, useCallback, useEffect } from 'react';
 import Paging from './components/Paging';
 import Posts from './components/Posts';
 
@@ -26,17 +25,20 @@ function App() {
     useSearch();
 
   // 조회하기
-  const handleValueChange = () => {
+  const handleValueChange = useCallback(() => {
     setCurrentPage(1);
-  };
+  }, [setCurrentPage]);
 
   // 엔터키로 조회하기
-  const onCheckEnter = (e) => {
-    if (e.key === 'Enter') {
-      setCurrentPage(1);
-      window.location.replace(`/?text=${changeText}&condition=${changeCondition}&row=${postsPerPage}&page=1`);
-    }
-  };
+  const onCheckEnter = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        setCurrentPage(1);
+        window.location.replace(`/?text=${changeText}&condition=${changeCondition}&row=${postsPerPage}&page=1`);
+      }
+    },
+    [changeCondition, changeText, postsPerPage, setCurrentPage],
+  );
 
   // 처음 랜더링 시 URL값 읽어와 변수에 담아주기
   useEffect(() => {
@@ -44,7 +46,7 @@ function App() {
 
     if (URLSearch.length > 0) {
       const arr = URLSearch.split('&');
-      const obj = {};
+      const obj: any = {};
 
       arr.forEach((element) => {
         obj[element.split('=')[0]] = element.split('=')[1];
@@ -58,14 +60,22 @@ function App() {
       setStaticPostsPerPage(obj.row);
       setCurrentPage(obj.page);
     }
-  }, []);
+  }, [
+    setChangeCondition,
+    setChangeText,
+    setCurrentPage,
+    setPostsPerPage,
+    setSearchCondition,
+    setSearchText,
+    setStaticPostsPerPage,
+  ]);
 
   if (postsLoading) {
     return <Loading />;
   }
 
   if (isError) {
-    return <span>Error: {error.message}</span>;
+    return <span>Error: {error?.message}</span>;
   }
 
   return (
@@ -95,7 +105,6 @@ function App() {
             href={`/?text=${changeText}&condition=${changeCondition}&row=${postsPerPage}&page=1`}
             onClick={handleValueChange}
             className="btn black small"
-            alt="조회하기"
           >
             조회
           </a>
